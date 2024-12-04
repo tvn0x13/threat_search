@@ -25,22 +25,22 @@ format:
 ## Шаги
 
 1. Установка dplyr
-```
+```{r}
 install.packages("dplyr")
 ```
 2. Выполнение заданий:
 * Сколько строк в датафрейме?
-```
+```{r}
 > starwars %>% nrow()
 [1] 87
 ```
 * Сколько столбцов в датафрейме? 
-```
+```{r}
 > starwars %>% ncol()
 [1] 14
 ```
 * Просмотр примернового вида датафрейма
-```
+```{r}
 > starwars %>% glimpse()
 Rows: 87
 Columns: 14
@@ -60,12 +60,12 @@ $ vehicles   <list> <"Snowspeeder", "Imperial Speeder Bike">, …
 $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 ```
 * Количество уникальные расы персонажей
-```
+```{r}
 > length(unique(starwars$species))  
 [1] 38
 ```
 * Самый высокий персонаж
-```
+```{r}
 > starwars %>% arrange(desc(height)) %>% slice_head(n = 1)
 # A tibble: 1 × 14
   name   height  mass hair_color skin_color eye_color birth_year
@@ -73,7 +73,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 1 Yarae…    264    NA none       white      yellow            NA
 ```
 * Все персонажи ниже 170
-```
+```{r}
 > starwars %>% filter(!is.na(height) & height < 170) %>% select(name,height)
 # A tibble: 22 × 2
    name                  height
@@ -82,7 +82,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 10 Watto                    137
 ```
 * Индекс массы тела всех персонажей
-```
+```{r}
 > starwars %>% filter(!is.na(mass) & !is.na(height)) %>% mutate(bmi = mass / (height/100)^2) %>% select(name,bmi)
 # A tibble: 59 × 2
    name                 bmi
@@ -99,7 +99,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 10 Obi-Wan Kenobi      23.2
 ```
 * 10 самых вытянутых персонажей. Вытянутость = масса / рост
-```
+```{r}
 > starwars %>% filter(!is.na(mass) & !is.na(height)) %>% mutate(stretch = mass / height) %>% arrange(desc(stretch)) %>% slice(1:10) %>% select(name,stretch)
 # A tibble: 10 × 2
    name                  stretch
@@ -116,7 +116,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 10 Chewbacca               0.491
 ```
 * Средний возраст персонажей каждой расы вселенной Звездных войн
-```
+```{r}
 > starwars <- starwars %>%  mutate(age = 2024 - birth_year)
 > average_age <- starwars %>% group_by(species) %>% summarise(average_age = mean(age, na.rm = TRUE))
 > average_age
@@ -135,7 +135,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 10 Gungan          1972
 ```
 * Самый распространенный цвет глаз
-```
+```{r}
 > eye_color <- starwars %>% group_by(eye_color) %>% summarize(count = n()) %>% arrange(desc(count)) %>% slice_head(n = 1)
 > eye_color
 # A tibble: 1 × 2
@@ -144,7 +144,7 @@ $ starships  <list> <"X-wing", "Imperial shuttle">, <>, <>, "T…
 1 brown        21
 ```
 * Средняя длина имени в каждой расе вселенной Звездных войн
-```
+```{r}
 > average_name_length <- starwars %>% mutate(name_length = nchar(name)) %>% group_by(species) %>%   summarize(avg_length = mean(name_length, na.rm = TRUE))
 > average_name_length
 # A tibble: 38 × 2
