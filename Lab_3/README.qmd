@@ -25,23 +25,23 @@ format:
 ## Шаги
 
 #### 1. Установка пакета nycflights13
-```
+```{r}
 install.packages('nycflights13')
 ```
 #### 2. Подключение библиотеки nycflights13 и dplyr
-```
+```{r}
 library(nycflights13)
 library(dplyr)
 ```
 #### 3. Выполнение заданий
 
 * ##### Сколько встроенных в пакет nycflights13 датафреймов?
-```
+```{r}
 > length(data(package="nycflights13")$results[, "Item"])
 [1] 5
 ```
 * ##### Сколько строк в каждом датафрейме?
-```
+```{r}
 > list(flights = nrow(flights),airlines = nrow(airlines),airports = nrow(airports),planes = nrow(planes),weather = nrow(weather))
 $flights
 [1] 336776
@@ -59,7 +59,7 @@ $weather
 [1] 26115
 ```
 * ##### Сколько столбцов в каждом датафрейме?
-```
+```{r}
 > list(flights = ncol(flights),airlines = ncol(airlines),airports = ncol(airports),planes = ncol(planes),weather = ncol(weather))
 $flights
 [1] 19
@@ -77,7 +77,7 @@ $weather
 [1] 15
 ```
 * ##### Как просмотреть примерный вид датафрейма?
-```
+```{r}
 > flights %>% glimpse()
 Rows: 336,776
 Columns: 19
@@ -102,17 +102,17 @@ $ minute         <dbl> 15, 29, 40, 45, 0, 58, 0, 0, 0, 0, 0, 0…
 $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 ```
 * ##### Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных (представлено в наборах данных)?
-```
+```{r}
 > flights %>% filter(!is.na(carrier)) %>% distinct(carrier) %>% nrow()
 [1] 16
 ```
 * ##### Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
-```
+```{r}
 > flights %>% filter(origin == "JFK", month == 5) %>% nrow()
 [1] 9397
 ```
 * ##### Какой самый северный аэропорт?
-```
+```{r}
 > airports %>% arrange(desc(lat)) %>% slice(1)
 # A tibble: 1 × 8
   faa   name                   lat   lon   alt    tz dst   tzone
@@ -120,7 +120,7 @@ $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 1 EEN   Dillant Hopkins Air…  72.3  42.9   149    -5 A     NA
 ```
 * ##### Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
-```
+```{r}
 > airports %>% arrange(desc(alt)) %>% slice(1)
 # A tibble: 1 × 8
   faa   name        lat   lon   alt    tz dst   tzone         
@@ -128,7 +128,7 @@ $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 1 TEX   Telluride  38.0 -108.  9078    -7 A     America/Denver
 ```
 * ##### Какие бортовые номера у самых старых самолетов?
-```
+```{r}
 > planes %>% arrange(desc(year)) %>% select(tailnum)
 # A tibble: 3,322 × 1
    tailnum
@@ -145,7 +145,7 @@ $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 10 N199UW
 ```
 * ##### Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия)
-```
+```{r}
 > weather %>% filter(origin == "JFK", month == 9) %>% summarise(avg_temp = mean((temp - 32) * 5 / 9, na.rm = TRUE))
 # A tibble: 1 × 1
   avg_temp
@@ -153,7 +153,7 @@ $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 1     19.4
 ```
 * ##### Самолеты какой авиакомпании совершили больше всего вылетов в июне?
-```
+```{r}
 > flights %>% filter(month == 6) %>% count(carrier, sort = TRUE)
 # A tibble: 16 × 2
    carrier     n
@@ -176,7 +176,7 @@ $ time_hour      <dttm> 2013-01-01 05:00:00, 2013-01-01 05:00:…
 16 OO          2
 ```
 * ##### Самолеты какой авиакомпании задерживались чаще других в 2013 году?
-```
+```{r}
 > flights %>% filter(dep_delay > 0 & year == 2013) %>% count(carrier, sort = TRUE)
 # A tibble: 16 × 2
    carrier     n
