@@ -33,11 +33,11 @@ format:
 1. Для начала прохождения курса необходимо установить Установить интерпретатор R.
 2. Далее Установить Rstudio IDE.
 3. Установить программный пакет swirl: через интерфейс Rstudio IDE или функцией R
-```
+```{r}
 install.packages("swirl")
 ```
 4. Запуск задания
-```
+```{r}
 > swirl::swirl()
 | Welcome to swirl! Please sign in. If you've been here before, use the
 | same name as you did then. If you are new, call yourself something
@@ -50,7 +50,7 @@ What shall I call you? tvn
 | reading and ready to continue.
 ```
 5. Выбор курса R Programming: The basics of programming in R
-```
+```{r}
 | To begin, you must install a course. I can install a course for you
 | from the internet, or I can send you to a web page
 | (https://github.com/swirldev/swirl_courses) which will provide course
@@ -75,7 +75,7 @@ What shall I call you? tvn
 ```
 6. Выполнение подкурсов:
 * Basic Building Blocks
-```
+```{r}
 | Please choose a lesson, or type 0 to return to course menu.
  1: Basic Building Blocks      2: Workspace and Files     
  3: Sequences of Numbers       4: Vectors                 
@@ -422,7 +422,7 @@ What shall I call you? tvn
 ```
 
 * Workspace and Files
-```
+```{r}
 | Please choose a lesson, or type 0 to return to course menu.
  1: Basic Building Blocks      2: Workspace and Files     
  3: Sequences of Numbers       4: Vectors                 
@@ -730,7 +730,7 @@ mytest.R 2024-11-25 21:03:15  no
 ```
 
 * Sequences of Numbers
-```
+```{r}
 | Please choose a lesson, or type 0 to return to course menu.
  1: Basic Building Blocks      2: Workspace and Files     
  3: Sequences of Numbers       4: Vectors                 
@@ -925,7 +925,7 @@ mytest.R 2024-11-25 21:03:15  no
 ```
 
 * Vectors
-```
+```{r}
 | Please choose a lesson, or type 0 to return to course menu.
  1: Basic Building Blocks      2: Workspace and Files     
  3: Sequences of Numbers       4: Vectors                 
@@ -1233,7 +1233,7 @@ mytest.R 2024-11-25 21:03:15  no
 ```
 
 * Missing Values
-```
+```{r}
 | Please choose a lesson, or type 0 to return to course menu.
  1: Basic Building Blocks      2: Workspace and Files     
  3: Sequences of Numbers       4: Vectors                 
