@@ -1,0 +1,94 @@
+# Анализ данных сетевого трафика с использованием аналитической in-memory СУБД DuckDB
+## Цель работы
+1. Изучить возможности СУБД DuckDB для обработки и анализ больших данных
+2. Получить навыки применения DuckDB совместно с языком программирования R
+3. Получить навыки анализа метаинфомации о сетевом трафике
+4. Получить навыки применения облачных технологий хранения, подготовки и анализа данных: Yandex Object Storage, Rstudio Server
+## Исходные данные
+1. Программное обеспечение Windows 10
+2. Библиотека dplyr
+3. Библиотека DuckDB
+4. Rstudio Server
+## План
+1. Подключиться к Rstudio Server
+2. Выполнить задания
+## Шаги
+### Подготовка данных
+
+1. Скачиваем данные с помощью функции download.file
+```
+> download.file('https://storage.yandexcloud.net/arrow-datasets/tm_data.pqt', destfile = "tm_data.pqt")
+```
+2. Загружаем данные пакетов в таблицу tbl
+```
+> con <- dbConnect(duckdb())
+> dbExecute(con,"CREATE TABLE tbl as SELECT * FROM read_parquet('tm_data.pqt')")
+```
+### Выполнение заданий
+1. Найдите утечку данных из Вашей сети
+```
+dbGetQuery(con,"SELECT src FROM tbl WHERE (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%') AND NOT (dst LIKE '12.%' AND dst LIKE '13.%' AND dst LIKE '14.%') GROUP BY src ORDER BY SUM(bytes) DESC LIMIT 1")
+```
+```
+           src
+1 13.37.84.125
+```
+2. Найдите утечку данных 2
+```
+> dbGetQuery(con,"SELECT time,COUNT(*) AS trafictime FROM (SELECT timestamp,src,dst,bytes,((src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%') AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%')) AS trafic,EXTRACT(HOUR FROM epoch_ms(CAST(timestamp AS BIGINT))) AS time FROM tbl) sub WHERE trafic = TRUE AND time BETWEEN 0 AND 24 GROUP BY time ORDER BY trafictime DESC;")
+```
+```
+   time trafictime
+1    16    4490576
+2    22    4489703
+3    18    4489386
+4    23    4488093
+5    19    4487345
+6    21    4487109
+7    17    4483578
+8    20    4482712
+9    13     169617
+10    7     169241
+11    0     169068
+12    3     169050
+13   14     169028
+14    6     169015
+15   12     168892
+16   10     168750
+17    2     168711
+18   11     168684
+19    1     168539
+20    4     168422
+21   15     168355
+22    5     168283
+23    9     168283
+24    8     168205
+```
+```
+> dbGetQuery(con,"SELECT src FROM (SELECT src, SUM(bytes) AS total_bytes FROM (SELECT *, EXTRACT(HOUR FROM epoch_ms(CAST(timestamp AS BIGINT))) AS time FROM tbl) sub WHERE src <> '13.37.84.125' AND (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%') AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%') AND time BETWEEN 1 AND 15 GROUP BY src) grp ORDER BY total_bytes DESC LIMIT 1;")
+```
+```
+          src
+1 12.55.77.96
+```
+1. Найдите утечку данных 3
+```
+> dbExecute(con,"CREATE TEMPORARY TABLE table1 AS SELECT src, bytes, port FROM tbl WHERE src <> '13.37.84.125' AND src <> '12.55.77.96' AND (src LIKE '12.%' OR src LIKE '13.%' OR src LIKE '14.%') AND (dst NOT LIKE '12.%' AND dst NOT LIKE '13.%' AND dst NOT LIKE '14.%');")
+```
+```
+[1] 38498353
+```
+```
+> dbGetQuery(con,"SELECT port, AVG(bytes) AS mean_bytes, MAX(bytes) AS max_bytes, SUM(bytes) AS sum_bytes, MAX(bytes) - AVG(bytes) AS diff FROM table1 GROUP BY port HAVING MAX(bytes) - AVG(bytes) <> 0 ORDER BY diff DESC LIMIT 1;")
+```
+```
+> dbGetQuery(con,"SELECT src FROM (SELECT src, AVG(bytes) AS mean_bytes FROM table1 WHERE port = 37 GROUP BY src) AS table2 ORDER BY mean_bytes DESC LIMIT 1;")
+```
+```
+           src
+1 14.31.107.42
+```
+## Оценка результата
+Был проанализирован пакет tm_data и выполнены все задания
+## Вывод
+Мы научились использовать библиотеку DuckDB для анализа данных
