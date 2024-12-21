@@ -45,8 +45,7 @@ install.packages("dplyr")
 ```
 * Количество уникальные расы персонажей
 ```{r}
-> length(unique(starwars$species))  
-[1] 38
+> length(unique(starwars$species))
 ```
 * Самый высокий персонаж
 ```{r}
