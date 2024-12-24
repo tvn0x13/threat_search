@@ -24,6 +24,8 @@ install.packages('nycflights13')
 #### 2. Подключение библиотеки nycflights13 и dplyr
 ```
 library(nycflights13)
+```
+```
 library(dplyr)
 ```
 #### 3. Выполнение заданий
