@@ -25,12 +25,10 @@ install.packages("dplyr")
 * Сколько строк в датафрейме?
 ```
 > starwars %>% nrow()
-[1] 87
 ```
 * Сколько столбцов в датафрейме? 
 ```
 > starwars %>% ncol()
-[1] 14
 ```
 * Просмотр примернового вида датафрейма
 ```
@@ -59,17 +57,25 @@ install.packages("dplyr")
 * Средний возраст персонажей каждой расы вселенной Звездных войн
 ```
 > starwars <- starwars %>%  mutate(age = 2024 - birth_year)
+```
+```
 > average_age <- starwars %>% group_by(species) %>% summarise(average_age = mean(age, na.rm = TRUE))
+```
+```
 > average_age
 ```
 * Самый распространенный цвет глаз
 ```
 > eye_color <- starwars %>% group_by(eye_color) %>% summarize(count = n()) %>% arrange(desc(count)) %>% slice_head(n = 1)
+```
+```
 > eye_color
 ```
 * Средняя длина имени в каждой расе вселенной Звездных войн
 ```
 > average_name_length <- starwars %>% mutate(name_length = nchar(name)) %>% group_by(species) %>%   summarize(avg_length = mean(name_length, na.rm = TRUE))
+```
+```
 > average_name_length
 ```
 ## Оценка результата
