@@ -24,66 +24,105 @@ format:
 3. Ответить на вопросы
 ## Шаги
 
-1. Установка dplyr
-```{r}
+###1. Установка dplyr
+```
 install.packages("dplyr")
 ```
-2. Выполнение заданий:
-* Сколько строк в датафрейме?
+
+### 2. Загрузка библиотеки
+
+Для работы с функциями dplyr библиотека была загружена:
+
 ```{r}
-> starwars %>% nrow()
+library("dplyr")
 ```
-* Сколько столбцов в датафрейме? 
+
+### 3. Сколько строк в датафрейме?
+
+Для подсчёта строк в датафрейме использовалась команда:
+
 ```{r}
-> starwars %>% ncol()
+starwars %>% nrow()
 ```
-* Просмотр примернового вида датафрейма
+
+### 4. Сколько столбцов в датафрейме?
+
+Количество столбцов:
+
 ```{r}
-> starwars %>% glimpse()
+starwars %>% ncol()
 ```
-* Количество уникальные расы персонажей
+
+### 5. Как посмотреть примерный вид датафрейма?
+
+Использовалась функция `glimpse()` для просмотра структуры датафрейма:
+
 ```{r}
-> length(unique(starwars$species))
+starwars %>% glimpse()
 ```
-* Самый высокий персонаж
+
+### 6. Сколько уникальных рас персонажей (species) представлено в данных?
+
+Для определения уникальных рас была применена следующая команда:
+
 ```{r}
-> starwars %>% arrange(desc(height)) %>% slice_head(n = 1)
+starwars %>% distinct(species) %>% filter(!is.na(species)) %>% nrow()
 ```
-* Все персонажи ниже 170
+
+### 7. Найти самого высокого персонажа
+
+Для нахождения самого высокого персонажа использовалась команда:
+
 ```{r}
-> starwars %>% filter(!is.na(height) & height < 170) %>% select(name,height)
+starwars %>% filter(is.na(height) == FALSE) %>% slice_max(height) %>% select(name, height)
 ```
-* Индекс массы тела всех персонажей
+
+### 8. Найти всех персонажей ниже 170
+
+Персонажи ниже 170:
+
 ```{r}
-> starwars %>% filter(!is.na(mass) & !is.na(height)) %>% mutate(bmi = mass / (height/100)^2) %>% select(name,bmi)
+starwars %>% filter(height < 170) %>% select(name, height)
 ```
-* 10 самых вытянутых персонажей. Вытянутость = масса / рост
+
+### 9. Подсчитать ИМТ (индекс массы тела) для всех персонажей
+
+ИМТ был рассчитан по формуле:
+
 ```{r}
-> starwars %>% filter(!is.na(mass) & !is.na(height)) %>% mutate(stretch = mass / height) %>% arrange(desc(stretch)) %>% slice(1:10) %>% select(name,stretch)
+print(starwars %>% mutate(imt = mass / (height)^2) %>% select(name, imt))
 ```
-* Средний возраст персонажей каждой расы вселенной Звездных войн
+
+### 10. Найти 10 самых "вытянутых" персонажей
+
+Отношение массы к росту:
+
 ```{r}
-> starwars <- starwars %>%  mutate(age = 2024 - birth_year)
+starwars %>% mutate(v = mass / height) %>% arrange(desc(v)) %>% select(name, v) %>% head(n = 10)
 ```
+
+### 11. Найти средний возраст персонажей каждой расы
+
+Средний возраст (годы рождения):
+
 ```{r}
-> average_age <- starwars %>% group_by(species) %>% summarise(average_age = mean(age, na.rm = TRUE))
+starwars %>% group_by(species) %>% filter(!is.na(birth_year)) %>% summarise(mean(birth_year))
 ```
+
+### 12. Найти самый распространённый цвет глаз
+
+Распространённый цвет глаз:
+
 ```{r}
-> average_age
+starwars %>% filter(!is.na(eye_color)) %>% group_by(eye_color) %>% summarise(sum = n()) %>% arrange(desc(sum)) %>% head(1)
 ```
-* Самый распространенный цвет глаз
+
+### 13. Подсчитать среднюю длину имени в каждой расе
+
+Средняя длина имени:
+
 ```{r}
-> eye_color <- starwars %>% group_by(eye_color) %>% summarize(count = n()) %>% arrange(desc(count)) %>% slice_head(n = 1)
-```
-```{r}
-> eye_color
-```
-* Средняя длина имени в каждой расе вселенной Звездных войн
-```{r}
-> average_name_length <- starwars %>% mutate(name_length = nchar(name)) %>% group_by(species) %>%   summarize(avg_length = mean(name_length, na.rm = TRUE))
-```
-```{r}
-> average_name_length
+starwars %>% filter(!is.na(species)) %>% mutate(nlen = nchar(name)) %>% group_by(species) %>% summarise(mean(nlen))
 ```
 ## Оценка результата
 
