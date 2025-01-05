@@ -24,7 +24,7 @@ format:
 3. Ответить на вопросы
 ## Шаги
 
-###1. Установка dplyr
+### 1. Установка dplyr
 ```
 install.packages("dplyr")
 ```
