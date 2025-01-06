@@ -17,67 +17,202 @@
 3. Ответить на вопросы
 ## Шаги
 
-#### 1. Установка пакета nycflights13
-```
-install.packages('nycflights13')
-```
-#### 2. Подключение библиотеки nycflights13 и dplyr
-```
-library(nycflights13)
-```
-```
+### Шаг 1: Получение данных
+Подключим пакеты:
+
+``` r
 library(dplyr)
 ```
-#### 3. Выполнение заданий
 
-* ##### Сколько встроенных в пакет nycflights13 датафреймов?
+    Warning: пакет 'dplyr' был собран под R версии 4.4.2
+
+
+    Присоединяю пакет: 'dplyr'
+
+    Следующие объекты скрыты от 'package:stats':
+
+        filter, lag
+
+    Следующие объекты скрыты от 'package:base':
+
+        intersect, setdiff, setequal, union
+
+``` r
+library(nycflights13)
 ```
-> length(data(package="nycflights13")$results[, "Item"])
+
+    Warning: пакет 'nycflights13' был собран под R версии 4.4.2
+
+### Шаг 2: Ответы на вопросы
+
+-   Сколько встроенных в пакет nycflights13 датафреймов?
+
+``` r
+ls("package:nycflights13") %>% length()
 ```
-* ##### Сколько строк в каждом датафрейме?
+
+    [1] 5
+
+-   Сколько строк в каждом датафрейме?
+
+``` r
+list(
+  flights = nrow(flights),
+  airlines = nrow(airlines),
+  airports = nrow(airports),
+  planes = nrow(planes),
+  weather = nrow(weather))
 ```
-> list(flights = nrow(flights),airlines = nrow(airlines),airports = nrow(airports),planes = nrow(planes),weather = nrow(weather))
+
+    $flights
+    [1] 336776
+
+    $airlines
+    [1] 16
+
+    $airports
+    [1] 1458
+
+    $planes
+    [1] 3322
+
+    $weather
+    [1] 26115
+
+-   Сколько столбцов в каждом датафрейме?
+
+``` r
+list(
+  flights = ncol(flights),
+  airlines = ncol(airlines),
+  airports = ncol(airports),
+  planes = ncol(planes),
+  weather = ncol(weather))
 ```
-* ##### Сколько столбцов в каждом датафрейме?
+
+    $flights
+    [1] 19
+
+    $airlines
+    [1] 2
+
+    $airports
+    [1] 8
+
+    $planes
+    [1] 9
+
+    $weather
+    [1] 15
+
+-   Как просмотреть примерный вид датафрейма?
+
+``` r
+planes %>% glimpse()
 ```
-> list(flights = ncol(flights),airlines = ncol(airlines),airports = ncol(airports),planes = ncol(planes),weather = ncol(weather))
+
+    Rows: 3,322
+    Columns: 9
+    $ tailnum      <chr> "N10156", "N102UW", "N103US", "N104UW", "N10575", "N105UW…
+    $ year         <int> 2004, 1998, 1999, 1999, 2002, 1999, 1999, 1999, 1999, 199…
+    $ type         <chr> "Fixed wing multi engine", "Fixed wing multi engine", "Fi…
+    $ manufacturer <chr> "EMBRAER", "AIRBUS INDUSTRIE", "AIRBUS INDUSTRIE", "AIRBU…
+    $ model        <chr> "EMB-145XR", "A320-214", "A320-214", "A320-214", "EMB-145…
+    $ engines      <int> 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, …
+    $ seats        <int> 55, 182, 182, 182, 55, 182, 182, 182, 182, 182, 55, 55, 5…
+    $ speed        <int> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+    $ engine       <chr> "Turbo-fan", "Turbo-fan", "Turbo-fan", "Turbo-fan", "Turb…
+
+-   Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных
+    (представлено в наборах данных)?
+
+``` r
+airlines %>%
+  select(carrier) %>%
+  unique() %>%
+  filter(!is.na(carrier)) %>%
+  nrow()
 ```
-* ##### Как просмотреть примерный вид датафрейма?
+
+    [1] 16
+
+-   Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
+
+``` r
+flights %>% filter(origin == "JFK", month == 5) %>% nrow()
 ```
-> flights %>% glimpse()
+
+    [1] 9397
+
+-   Какой самый северный аэропорт?
+
+``` r
+airports %>% arrange(desc(lat)) %>% slice(1)
 ```
-* ##### Сколько компаний-перевозчиков (carrier) учитывают эти наборы данных (представлено в наборах данных)?
+
+    # A tibble: 1 × 8
+      faa   name                      lat   lon   alt    tz dst   tzone
+      <chr> <chr>                   <dbl> <dbl> <dbl> <dbl> <chr> <chr>
+    1 EEN   Dillant Hopkins Airport  72.3  42.9   149    -5 A     <NA> 
+
+-   Какой аэропорт самый высокогорный (находится выше всех над уровнем
+    моря)?
+
+``` r
+airports %>% arrange(desc(alt)) %>% slice(1)
 ```
-> flights %>% filter(!is.na(carrier)) %>% distinct(carrier) %>% nrow()
+
+    # A tibble: 1 × 8
+      faa   name        lat   lon   alt    tz dst   tzone         
+      <chr> <chr>     <dbl> <dbl> <dbl> <dbl> <chr> <chr>         
+    1 TEX   Telluride  38.0 -108.  9078    -7 A     America/Denver
+
+-   Какие бортовые номера у самых старых самолетов?
+
+``` r
+airports %>% arrange(desc(lat)) %>% slice(1)
 ```
-* ##### Сколько рейсов принял аэропорт John F Kennedy Intl в мае?
+
+    # A tibble: 1 × 8
+      faa   name                      lat   lon   alt    tz dst   tzone
+      <chr> <chr>                   <dbl> <dbl> <dbl> <dbl> <chr> <chr>
+    1 EEN   Dillant Hopkins Airport  72.3  42.9   149    -5 A     <NA> 
+
+-   Какая средняя температура воздуха была в сентябре в аэропорту John F
+    Kennedy Intl (в градусах Цельсия).
+
+``` r
+weather %>% filter(origin == "JFK", month == 9) %>% summarise(avg_temp = mean((temp - 32) * 5 / 9, na.rm = TRUE))
 ```
-> flights %>% filter(origin == "JFK", month == 5) %>% nrow()
+
+    # A tibble: 1 × 1
+      avg_temp
+         <dbl>
+    1     19.4
+
+-   Самолеты какой авиакомпании совершили больше всего вылетов в июне?
+
+``` r
+b<- flights %>% filter(month == 6) %>% group_by(carrier) %>% summarise("coun"=n()) %>% arrange(desc(coun)) %>% slice(1) %>% select(carrier)
+airlines %>% filter(carrier == b$carrier) %>% select(name)
 ```
-* ##### Какой самый северный аэропорт?
+
+    # A tibble: 1 × 1
+      name                 
+      <chr>                
+    1 United Air Lines Inc.
+
+-   Самолеты какой авиакомпании задерживались чаще других в 2013 году?
+
+``` r
+c<- flights %>% filter(arr_delay > 0 & year == 2013) %>% group_by(carrier) %>% summarise("coun"=n()) %>% arrange(desc(coun)) %>% slice(1) %>% select(carrier)
+airlines %>% filter(carrier == c$carrier) %>% select(name)
 ```
-> airports %>% arrange(desc(lat)) %>% slice(1)
-```
-* ##### Какой аэропорт самый высокогорный (находится выше всех над уровнем моря)?
-```
-> airports %>% arrange(desc(alt)) %>% slice(1)
-```
-* ##### Какие бортовые номера у самых старых самолетов?
-```
-> planes %>% arrange(desc(year)) %>% select(tailnum)
-```
-* ##### Какая средняя температура воздуха была в сентябре в аэропорту John F Kennedy Intl (в градусах Цельсия)
-```
-> weather %>% filter(origin == "JFK", month == 9) %>% summarise(avg_temp = mean((temp - 32) * 5 / 9, na.rm = TRUE))
-```
-* ##### Самолеты какой авиакомпании совершили больше всего вылетов в июне?
-```
-> flights %>% filter(month == 6) %>% count(carrier, sort = TRUE)
-```
-* ##### Самолеты какой авиакомпании задерживались чаще других в 2013 году?
-```
-> flights %>% filter(dep_delay > 0 & year == 2013) %>% count(carrier, sort = TRUE)
-```
+
+    # A tibble: 1 × 1
+      name                    
+      <chr>                   
+    1 ExpressJet Airlines Inc.
 ## Оценка результата
 
 В результате были выполненны задачи с использованием набора данных nycflights13.
